@@ -1,24 +1,24 @@
 {
-  "name": "angular-patient-resource",
+  "name": "angular-patience",
   "version": "0.0.0",
-  "description": "Wait a long time for results, uses web sockets",
-  "main": "src/patient-resource.js",
+  "description": "Efficiently wait for long server processing",
+  "main": "src/patience.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/begriffs/angular-patient-resource.git"
+    "url": "git://github.com/begriffs/angular-patience.git"
   },
   "devDependencies": {
-    "bower"                        : "latest",
-    "grunt"                        : "latest",
-    "grunt-bump"                   : "latest",
-    "grunt-cli"                    : "latest",
-    "grunt-contrib-jshint"         : "latest",
-    "grunt-contrib-watch"          : "latest",
-    "grunt-karma"                  : "latest",
-    "jshint"                       : "latest",
-    "karma"                        : "latest",
-    "karma-jasmine"                : "latest",
-    "karma-phantomjs-launcher"     : "latest"
+    "bower"                    : "latest",
+    "grunt"                    : "latest",
+    "grunt-bump"               : "latest",
+    "grunt-cli"                : "latest",
+    "grunt-contrib-jshint"     : "latest",
+    "grunt-contrib-watch"      : "latest",
+    "grunt-karma"              : "latest",
+    "jshint"                   : "latest",
+    "karma"                    : "latest",
+    "karma-jasmine"            : "latest",
+    "karma-phantomjs-launcher" : "latest"
   },
   "keywords": [],
   "author": {

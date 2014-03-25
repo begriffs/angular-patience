@@ -1,7 +1,7 @@
 {
-  "name": "angular-patient-resource",
+  "name": "angular-patience",
   "version": "0.0.0",
-  "main": "src/patient-resource.js",
+  "main": "src/patience.js",
   "dependencies": {
     "angular": "latest"
   },
