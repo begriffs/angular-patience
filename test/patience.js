@@ -15,23 +15,48 @@
   });
 
   describe('the patience interceptor', function () {
-    it('passes normal responses through', function () {
-      var handlers = {
-        success: function (data, status) {
-          expect(status).toEqual(200);
-        },
-        error: function () { }
-      };
-      spyOn(handlers, 'success').andCallThrough();
-      spyOn(handlers, 'error');
+    it('forwards normal responses', function () {
+      var statuses = [200, 202];
+      angular.forEach(statuses, function(s) {
+        var handlers = {
+          success: function (data, status) {
+            expect(status).toEqual(s);
+          },
+          error: function () { }
+        };
+        spyOn(handlers, 'success').andCallThrough();
+        spyOn(handlers, 'error');
 
-      $http.get('/slow').success(handlers.success).error(handlers.error);
+        $http.get('/slow').success(handlers.success).error(handlers.error);
 
-      $httpBackend.expectGET('/slow').respond(200, '');
-      $httpBackend.flush();
+        $httpBackend.expectGET('/slow').respond(s, '');
+        $httpBackend.flush();
 
-      expect(handlers.success).toHaveBeenCalled();
-      expect(handlers.error).not.toHaveBeenCalled();
+        expect(handlers.success).toHaveBeenCalled();
+        expect(handlers.error).not.toHaveBeenCalled();
+      });
+    });
+
+    it('forwards error responses', function () {
+      var statuses = [404, 500];
+      angular.forEach(statuses, function(s) {
+        var handlers = {
+          success: function () { },
+          error: function (data, status) {
+            expect(status).toEqual(s);
+          }
+        };
+        spyOn(handlers, 'success');
+        spyOn(handlers, 'error').andCallThrough();
+
+        $http.get('/slow').success(handlers.success).error(handlers.error);
+
+        $httpBackend.expectGET('/slow').respond(s, '');
+        $httpBackend.flush();
+
+        expect(handlers.success).not.toHaveBeenCalled();
+        expect(handlers.error).toHaveBeenCalled();
+      });
     });
   });
 
