@@ -5,25 +5,15 @@
 
     factory('patience', ['$http', '$q', function ($http, $q) {
       return {
-        request: function(config) {
-          return config || $q.when(config);
-        },
-
-        requestError: function(rejection) {
-          if (canRecover(rejection)) {
-            return responseOrNewPromise;
-          }
-          return $q.reject(rejection);
-        },
-
         response: function(response) {
+          console.log(response);
           return response || $q.when(response);
         },
 
         responseError: function(rejection) {
-          if (canRecover(rejection)) {
-            return responseOrNewPromise;
-          }
+          // if (canRecover(rejection)) {
+          //   return responseOrNewPromise;
+          // }
           return $q.reject(rejection);
         }
       };
