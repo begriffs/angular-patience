@@ -58,6 +58,15 @@
         expect(handlers.error).toHaveBeenCalled();
       });
     });
+
+    it('follows 202 location suggestion', function () {
+      $http.get('/slow');
+
+      $httpBackend.expectGET('/slow').respond(202, '', {Location: '/status'});
+      $httpBackend.expectGET('/status').respond(200, '');
+      $httpBackend.flush();
+      $httpBackend.verifyNoOutstandingRequest();
+    });
   });
 
 }());
