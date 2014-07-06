@@ -20,7 +20,8 @@ module.exports = function(config) {
       'bower_components/ngSocket/dist/ngSocket.js',
       'bower_components/jasmine-as-promised/src/jasmine-as-promised.js',
       'src/patience.js',
-      'test/**/*.js'
+      'test/phantom_bind_polyfill.js',
+      'test/patience.js'
     ],
 
 
