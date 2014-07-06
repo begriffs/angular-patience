@@ -17,6 +17,7 @@ module.exports = function(config) {
     files: [
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
+      'bower_components/ngSocket/dist/ngSocket.js',
       'bower_components/jasmine-as-promised/src/jasmine-as-promised.js',
       'src/patience.js',
       'test/**/*.js'

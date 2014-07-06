@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "main": "src/patience.js",
   "dependencies": {
-    "angular": "latest"
+    "angular": "latest",
+    "ngSocket": "latest"
   },
   "devDependencies": {
     "angular-mocks": "latest",

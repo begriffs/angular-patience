@@ -1,15 +1,17 @@
 (function () {
   'use strict';
 
-  var $http, $httpBackend;
+  var $http, $httpBackend, $sockBackend;
   beforeEach(function () {
     angular.mock.module('begriffs.patience');
+    angular.mock.module('ngSocketMock');
 
     angular.mock.inject(
-      ['$http', '$httpBackend',
-      function (http, httpBackend) {
-        $http = http;
+      ['$http', '$httpBackend', 'ngSocketBackend',
+      function (http, httpBackend, sockBackend) {
+        $http        = http;
         $httpBackend = httpBackend;
+        $sockBackend = sockBackend;
       }]
     );
   });
@@ -59,13 +61,27 @@
       });
     });
 
-    it('follows 202 location suggestion', function () {
-      $http.get('/slow');
+    it('becomes patient upon HTTP 202 and websocket upgrade', function () {
+      var handlers = {
+        success: function () { },
+        error: function () { },
+        notify: function () { }
+      };
+      spyOn(handlers, 'success');
+      spyOn(handlers, 'error');
+      spyOn(handlers, 'notify').andCallThrough();
 
-      $httpBackend.expectGET('/slow').respond(202, '', {Location: '/status'});
-      $httpBackend.expectGET('/status').respond(200, '');
-      $httpBackend.flush();
-      $httpBackend.verifyNoOutstandingRequest();
+      $httpBackend.expectGET('/slow').respond(202, '', {Location: 'wss://status'});
+      $http.get('/slow').then(handlers.success, handlers.error, handlers.notify);
+
+      $sockBackend.expectConnect('wss://status');
+
+      var sock = $sockBackend.createWebSocketBackend('wss://status');
+      console.log(sock);
+      sock.send('notify', { progress: 0.5 });
+
+      $sockBackend.flush();
+      expect(handlers.notify).toHaveBeenCalled();
     });
   });
 
