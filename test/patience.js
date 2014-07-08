@@ -1,20 +1,26 @@
 (function () {
   'use strict';
 
-  var $http, $httpBackend, $sockBackend;
+  var $http, $httpBackend, $sock, $sockBackend;
   beforeEach(function () {
     angular.mock.module('begriffs.patience');
     angular.mock.module('ngSocketMock');
 
     angular.mock.inject(
-      ['$http', '$httpBackend', 'ngSocketBackend',
-      function (http, httpBackend, sockBackend) {
+      ['$http', '$httpBackend', 'ngSocket', 'ngSocketBackend',
+      function (http, httpBackend, sock, sockBackend) {
         $http        = http;
         $httpBackend = httpBackend;
+        $sock        = sock;
         $sockBackend = sockBackend;
       }]
     );
   });
+
+  // afterEach(function () {
+  //   $sockBackend.verifyNoOutstandingRequest();
+  //   //$sockBackend.verifyNoOutstandingExpectation();
+  // });
 
   describe('the patience interceptor', function () {
     it('forwards normal responses', function () {
@@ -26,7 +32,7 @@
           },
           error: function () { }
         };
-        spyOn(handlers, 'success').andCallThrough();
+        spyOn(handlers, 'success').and.callThrough();
         spyOn(handlers, 'error');
 
         $http.get('/slow').success(handlers.success).error(handlers.error);
@@ -49,7 +55,7 @@
           }
         };
         spyOn(handlers, 'success');
-        spyOn(handlers, 'error').andCallThrough();
+        spyOn(handlers, 'error').and.callThrough();
 
         $http.get('/slow').success(handlers.success).error(handlers.error);
 
@@ -65,23 +71,24 @@
       var handlers = {
         success: function () { },
         error: function () { },
-        notify: function () { }
+        notify: function () { done(); }
       };
       spyOn(handlers, 'success');
       spyOn(handlers, 'error');
-      spyOn(handlers, 'notify').andCallThrough();
+      spyOn(handlers, 'notify').and.callThrough();
 
-      $httpBackend.expectGET('/slow').respond(202, '', {Location: 'wss://status'});
-      $http.get('/slow').then(handlers.success, handlers.error, handlers.notify);
+      var q = $http.get('/slow');
+      q.then(handlers.success, handlers.error, handlers.notify);
 
-      $sockBackend.expectConnect('wss://status');
+      $httpBackend.expectGET('/slow').respond(202, '', {'Location': 'wss://status'});
+      $httpBackend.flush();
 
-      var sock = $sockBackend.createWebSocketBackend('wss://status');
-      console.log(sock);
-      sock.send('notify', { progress: 0.5 });
-
+      $sock('wss://status').send('notify');
       $sockBackend.flush();
+
       expect(handlers.notify).toHaveBeenCalled();
+      expect(handlers.success).not.toHaveBeenCalled();
+      expect(handlers.error).not.toHaveBeenCalled();
     });
   });
 

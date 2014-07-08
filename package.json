@@ -17,7 +17,7 @@
     "grunt-karma"              : "latest",
     "jshint"                   : "latest",
     "karma"                    : "latest",
-    "karma-jasmine"            : "latest",
+    "karma-jasmine"            : "~0.2.0",
     "karma-phantomjs-launcher" : "latest"
   },
   "keywords": [],

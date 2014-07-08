@@ -13,15 +13,10 @@
               var ws = sock(response.headers('Location')),
                 wait = $q.defer();
 
-              ws.onMessage('notify', function (e) {
+              ws.onMessage(function (e) {
                 wait.notify(angular.fromJson(e.data));
-              });
-              ws.onMessage('complete', function (e) {
-                response.config.url = e.data.url;
-                wait.resolve($http(response.config));
-              });
-
-              return wait;
+              }, 'notify');
+              return wait.promise;
             }
 
             response.config.url = response.headers('Location');
@@ -31,9 +26,6 @@
         },
 
         responseError: function(rejection) {
-          // if (canRecover(rejection)) {
-          //   return responseOrNewPromise;
-          // }
           return $q.reject(rejection);
         }
       };
